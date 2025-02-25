@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { jobModel,applicationModel,chatModel  } from "./index.js";
 
 export const employeeRanges = [
   "1-10",
@@ -73,12 +74,33 @@ const companySchema = new mongoose.Schema(
     },
     approvedByAdmin: Boolean
   },
-  { timestamps: true ,toJSON:{virtuals:true},toObject:{virtuals:true}}
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
-companySchema.virtual('jobs',{
-  ref:'Job',
-  localField:'_id',
-  foreignField:"companyId",
+companySchema.virtual('jobs', {
+  ref: 'Job',
+  localField: '_id',
+  foreignField: "companyId",
 
 })
+
+
+companySchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  if (update.deletedAt) {
+      const companyId = this.getQuery()._id;
+      const company =await companyModel.findById(companyId)
+
+      await jobModel.updateMany({ companyId }, { closed: true });
+
+      const jobs = await jobModel.find({ companyId }).select("_id");
+      const jobIds = jobs.map(job => job._id);
+
+      await applicationModel.updateMany({ jobId: { $in: jobIds } }, { deletedAt: new Date() });
+
+      await chatModel.updateMany({ senderId: { $in: [...company.HRs, company.createdBy] } }, { deletedAt: new Date() });
+  }
+
+  next();
+});
+
 export const companyModel = mongoose.models.Company || mongoose.model("Company", companySchema);

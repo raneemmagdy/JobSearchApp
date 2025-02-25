@@ -10,7 +10,7 @@ const deleteExpiredOtps = () => {
         const usersWithExpiredOtps = await userModel.find({
           "OTP.expiresIn": { $lt: now }
         });
-        console.log(`Users with expired OTPs: ${usersWithExpiredOtps.length}`);
+     
   
         const result = await userModel.updateMany(
           { "OTP.expiresIn": { $lt: now } },

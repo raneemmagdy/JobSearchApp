@@ -1,9 +1,9 @@
-import {  GraphQLBoolean, GraphQLEnumType, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
-const mediaObj= new GraphQLObjectType({
+import { GraphQLBoolean, GraphQLEnumType, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLString } from "graphql";
+const mediaObj = new GraphQLObjectType({
     name: "companyMedia",
     fields: {
-      secure_url: { type: GraphQLString },
-      public_id: { type: GraphQLString },
+        secure_url: { type: GraphQLString },
+        public_id: { type: GraphQLString },
     }
 })
 
@@ -31,7 +31,7 @@ export const getOneCompanyType = new GraphQLObjectType({
             })
         },
         companyEmail: { type: GraphQLString },
-        createdBy: { type: GraphQLID }, 
+        createdBy: { type: GraphQLID },
         logo: { type: mediaObj },
         coverPic: { type: mediaObj },
         legalAttachment: { type: mediaObj },
@@ -42,4 +42,4 @@ export const getOneCompanyType = new GraphQLObjectType({
     }
 });
 
-export const getAllCompaniesType=new GraphQLList(getOneCompanyType)
+export const getAllCompaniesType = new GraphQLList(getOneCompanyType)

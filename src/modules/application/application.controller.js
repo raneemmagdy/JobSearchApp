@@ -6,7 +6,7 @@ import * as applicationServices from './application.service.js'
 import authentication from "../../middleware/authentication.js";
 import authorization, { roleOptions } from "../../middleware/authorization.js";
 import { formatOptions, multerHost } from "../../middleware/multer.js";
-const applicationRouter=Router()
+const applicationRouter = Router()
 applicationRouter.post('/:jobId', multerHost(formatOptions.pdf).single('userCV'),
     authentication,
     authorization(roleOptions.User),

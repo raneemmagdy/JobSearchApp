@@ -1,39 +1,49 @@
-import { chatModel } from "../../../DB/models/index.js";
+import { chatModel, companyModel } from "../../../DB/models/index.js";
 import { authSocket } from "../../../middleware/authentication.js";
 import { userSocketMap } from "../../socket.io.js";
 
-export const sendMessage=async(socket)=>{
-    socket.on('sendMessage',async(messageInfo)=>{
-        console.log(messageInfo);
-        const data=await authSocket({socket})
-        if (data.statusCode!=200) {
-            return socket.emit('authError',data)         
+export const sendMessage = async (socket) => {
+  socket.on("sendMessage", async ({ receiverId, message }) => {
+    try {
+      const authData = await authSocket({ socket });
+      if (authData.statusCode !== 200) {
+        return socket.emit("authError", { message: "Authentication required" });
+      }
+
+      const senderId = authData.user._id.toString();
+
+      let chat = await chatModel.findOne({
+        $or: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId }
+        ]
+      });
+
+      if (!chat) {
+
+        const company = await companyModel.findOne({
+          $or: [{ createdBy: senderId }, { HRs: senderId }]
+        });
+
+        if (!company) {
+          return socket.emit("error", { message: "Only HRs or company owners can start a conversation." });
         }
-        const userId=data.user._id
-        let chat;
-        chat = await chatModel.findOneAndUpdate({
-            $or:[
-                {mainUser:userId,subParticipant:messageInfo.destId},
-                {subParticipant:userId,mainUser:messageInfo.destId}
-            ]
-        },
-        {
-            $push:{messages:{senderId:userId,message:messageInfo.message}}
-        },
-        {new:1}
-    )
 
-    if(!chat){
-        chat =await chatModel.create({
-            mainUser:userId,
-            subParticipant:messageInfo.destId,
-            messages:[{senderId:userId,message:messageInfo.message}]
-        })
+        chat = await chatModel.create({ senderId, receiverId, messages: [] });
+      }
+
+
+      chat.messages.push({ senderId, message });
+      await chat.save();
+
+      const receiverSocketId = userSocketMap.get(receiverId.toString());
+      if (receiverSocketId) {
+        socket.to(receiverSocketId).emit("receiveMessage", { senderId, message });
+      }
+
+      socket.emit("messageSent", { message, receiverId });
+    } catch (error) {
+      socket.emit("error", { message: error.message });
     }
-
-
-    socket.emit("successMessage",{message:messageInfo.message})
-    socket.to(userSocketMap.get(messageInfo.destId.toString())).emit("receiveMessage",{message:messageInfo.message})
-
-    })
-}
+  });
+};

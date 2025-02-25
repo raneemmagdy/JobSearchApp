@@ -3,27 +3,27 @@ import { roleOptions } from "../../middleware/authorization.js";
 import * as module from "../../utils/index.js";
 //====================================================addCompany
 export const addCompany = async (req, res, next) => {
-      const { companyName, description, industry, address, numberOfEmployees, companyEmail } = req.body;
-      const existingCompany = await companyModel.findOne({ 
-        $or: [{ companyName }, { companyEmail }] 
-      })
-      if (existingCompany) {
-        return next(new module.AppGeneralError("Company name or email already exists",400 ))
-      }
+    const { companyName, description, industry, address, numberOfEmployees, companyEmail } = req.body;
+    const existingCompany = await companyModel.findOne({
+        $or: [{ companyName }, { companyEmail }]
+    })
+    if (existingCompany) {
+        return next(new module.AppGeneralError("Company name or email already exists", 400))
+    }
 
-      let logo = null
-      let coverPic = null
-      let legalAttachment = null
-      if (req.files?.logo) logo = await module.cloudinary.uploader.upload(req.files.logo[0].path,{folder: "JobSearchApp/company/logos"});
-      if (req.files?.coverPic) coverPic = await module.cloudinary.uploader.upload(req.files.coverPic[0].path,{folder: "JobSearchApp/company/covers"} );
-      if (req.files?.legalAttachment) legalAttachment = await module.cloudinary.uploader.upload(req.files.legalAttachment[0].path, {folder: "JobSearchApp/company/legal"});
-  
-      const newCompany = await companyModel.create({
+    let logo = null
+    let coverPic = null
+    let legalAttachment = null
+    if (req.files?.logo) logo = await module.cloudinary.uploader.upload(req.files.logo[0].path, { folder: "JobSearchApp/company/logos" });
+    if (req.files?.coverPic) coverPic = await module.cloudinary.uploader.upload(req.files.coverPic[0].path, { folder: "JobSearchApp/company/covers" });
+    if (req.files?.legalAttachment) legalAttachment = await module.cloudinary.uploader.upload(req.files.legalAttachment[0].path, { folder: "JobSearchApp/company/legal" });
+
+    const newCompany = await companyModel.create({
         companyName, description, industry, address, numberOfEmployees,
-        companyEmail, createdBy:req.user._id, logo, coverPic, legalAttachment
-      })
-  
-      return res.status(201).json({ message: "Company created successfully", company: newCompany });
+        companyEmail, createdBy: req.user._id, logo, coverPic, legalAttachment
+    })
+
+    return res.status(201).json({ message: "Company created successfully", company: newCompany });
 }
 
 
@@ -31,7 +31,7 @@ export const addCompany = async (req, res, next) => {
 export const updateCompany = async (req, res, next) => {
     const { companyId } = req.params;
     const { companyName, description, industry, address, numberOfEmployees, companyEmail } = req.body;
-    
+
     const company = await companyModel.findById(companyId);
     if (!company) {
         return next(new module.AppGeneralError("Company not found", 404));
@@ -46,17 +46,17 @@ export const updateCompany = async (req, res, next) => {
     let coverPic = company.coverPic;
     let logo = company.logo;
 
-   
+
     if (req.files?.coverPic) {
         if (company.coverPic?.public_id) {
-            await module.cloudinary.uploader.destroy(company.coverPic.public_id); 
+            await module.cloudinary.uploader.destroy(company.coverPic.public_id);
         }
         coverPic = await module.cloudinary.uploader.upload(req.files.coverPic[0].path, { folder: "JobSearchApp/company/covers" });
     }
 
     if (req.files?.logo) {
         if (company.logo?.public_id) {
-            await module.cloudinary.uploader.destroy(company.logo.public_id); 
+            await module.cloudinary.uploader.destroy(company.logo.public_id);
         }
         logo = await module.cloudinary.uploader.upload(req.files.logo[0].path, { folder: "JobSearchApp/company/logos" });
     }
@@ -87,8 +87,8 @@ export const softDeleteCompany = async (req, res, next) => {
         return next(new module.AppGeneralError("Unauthorized to delete this company", 403));
     }
 
-    const deletedCompany=await companyModel.findByIdAndUpdate(companyId,{deletedAt:Date.now()})
-    return res.status(200).json({ message: "Company soft deleted successfully",company:deletedCompany });
+    const deletedCompany = await companyModel.findByIdAndUpdate(companyId, { deletedAt: Date.now() })
+    return res.status(200).json({ message: "Company soft deleted successfully", company: deletedCompany });
 };
 
 
@@ -97,7 +97,7 @@ export const softDeleteCompany = async (req, res, next) => {
 export const getCompanyWithJobs = async (req, res, next) => {
     const { companyId } = req.params;
 
-    const company = await companyModel.findOne({ _id: companyId, deletedAt: null }) 
+    const company = await companyModel.findOne({ _id: companyId, deletedAt: null })
         .populate({
             path: "jobs",
             match: { closed: null }
@@ -120,10 +120,10 @@ export const searchCompanyByName = async (req, res, next) => {
     }
     const filter = {
         companyName: { $regex: new RegExp(name, "i") },
-        deletedAt: null, 
+        deletedAt: null,
     };
 
-    const result = await module.pagination({ page, model: companyModel,filter });
+    const result = await module.pagination({ page, model: companyModel, filter });
 
     return res.status(200).json({ message: "Done", result });
 };
@@ -241,8 +241,8 @@ export const deleteCompanyCover = async (req, res, next) => {
 
 //====================================================addHRToCompany
 export const addHRToCompany = async (req, res, next) => {
-    const { companyId,userId } = req.params;
-  
+    const { companyId, userId } = req.params;
+
     const company = await companyModel.findById(companyId);
     if (!company) {
         return next(new module.AppGeneralError("Company not found", 404));
@@ -250,7 +250,7 @@ export const addHRToCompany = async (req, res, next) => {
     if (company.deletedAt) {
         return next(new module.AppGeneralError("Company already deleted", 400));
     }
-    
+
     if (company.createdBy.toString() !== req.user._id.toString()) {
         return next(new module.AppGeneralError("Only the company owner can add HRs", 403));
     }
@@ -266,7 +266,7 @@ export const addHRToCompany = async (req, res, next) => {
     }
     const updatedCompany = await companyModel.findByIdAndUpdate(
         companyId,
-        { $addToSet: { HRs: userId } }, 
+        { $addToSet: { HRs: userId } },
         { new: true }
     );
 
@@ -280,17 +280,17 @@ export const addHRToCompany = async (req, res, next) => {
 //====================================================getCompanyWithHRs
 export const getCompanyWithHRs = async (req, res, next) => {
     const { companyId } = req.params;
-    const company = await companyModel.findById(companyId).populate({path: "HRs"});
-  
+    const company = await companyModel.findById(companyId).populate({ path: "HRs" });
+
     if (!company) {
-      return next(new module.AppGeneralError("Company not found", 404));
+        return next(new module.AppGeneralError("Company not found", 404));
     }
     if (company.deletedAt) {
         return next(new module.AppGeneralError("Company already deleted", 400));
     }
     return res.status(200).json({
-      message: "Company retrieved successfully",
-      company
+        message: "Company retrieved successfully",
+        company
     });
 }
 
@@ -324,7 +324,7 @@ export const removeHRFromCompany = async (req, res, next) => {
 
     const updatedCompany = await companyModel.findByIdAndUpdate(
         companyId,
-        { $pull: { HRs: userId } }, 
+        { $pull: { HRs: userId } },
         { new: true }
     );
 

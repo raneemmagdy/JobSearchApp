@@ -8,9 +8,11 @@ const chatSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: async function (value) {
-          return await companyModel.exists({ 
-            $or: [{ createdBy: value }, { HRs: value }] 
+          const isValid = await companyModel.exists({
+            $or: [{ createdBy: value }, { HRs: value }]
           });
+          console.log(`Sender Validation - ID: ${value}, isValid: ${isValid}`);
+          return isValid;
         },
         message: "Sender must be an HR or Company Owner."
       }
@@ -20,15 +22,16 @@ const chatSchema = new mongoose.Schema(
       ref: "User",
       required: true
     },
+    deletedAt:Date,
     messages: [{
-        message:{type:String,required:true},
-        senderId:{
-         type: mongoose.Schema.Types.ObjectId,
-         ref: 'User'
-        }
-     }]
+      message: { type: String, required: true },
+      senderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    }]
   },
   { timestamps: true }
 );
 
-export const chatModel =mongoose.models.Chat || mongoose.model("Chat", chatSchema);
+export const chatModel = mongoose.models.Chat || mongoose.model("Chat", chatSchema);

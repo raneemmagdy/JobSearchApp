@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
-export const jobLocationOptions = {onsite:"onsite", remotely:"remotely", hybrid:"hybrid"};
-export const workingTimeOptions = {'part-time':"part-time",'full-time': "full-time"};
+import { applicationModel } from "./application.model.js";
+export const jobLocationOptions = { onsite: "onsite", remotely: "remotely", hybrid: "hybrid" };
+export const workingTimeOptions = { 'part-time': "part-time", 'full-time': "full-time" };
 export const seniorityLevels = {
-  Fresh:"Fresh",
+  Fresh: "Fresh",
   Junior: "Junior",
-  'Mid-Level':"Mid-Level",
-  Senior:"Senior",
-  'Team-Lead':"Team-Lead",
-  CTO:"CTO"
+  'Mid-Level': "Mid-Level",
+  Senior: "Senior",
+  'Team-Lead': "Team-Lead",
+  CTO: "CTO"
 };
 
 const jobSchema = new mongoose.Schema(
@@ -61,11 +62,22 @@ const jobSchema = new mongoose.Schema(
       required: true
     }
   },
-  { timestamps: true ,toJSON:{virtuals:true},toObject:{virtuals:true}}
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
-jobSchema.virtual('applications',{
-  ref:'Application',
-  localField:'_id',
-  foreignField:'jobId'
+jobSchema.virtual('applications', {
+  ref: 'Application',
+  localField: '_id',
+  foreignField: 'jobId'
 })
+
+jobSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  if (update.closed) {
+      const jobId = this.getQuery()._id;
+      await applicationModel.updateMany({ jobId }, { deletedAt: new Date() });
+  }
+
+  next();
+});
+
 export const jobModel = mongoose.models.Job || mongoose.model("Job", jobSchema);

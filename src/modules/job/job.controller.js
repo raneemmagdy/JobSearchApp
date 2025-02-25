@@ -5,13 +5,13 @@ import * as jobValidation from './job.validation.js'
 import * as jobServices from './job.service.js'
 import authentication from "../../middleware/authentication.js";
 
-const jobRouter=Router({mergeParams:true})
-jobRouter.get('/allJobsForCompany',validation(jobValidation.getAllJobWithAppForSpecificCompanyValidation),asyncHandler(jobServices.getAllJobWithAppForSpecificCompany))
-jobRouter.get('/filter',validation(jobValidation.getFilteredJobsValidation),asyncHandler(jobServices.getFilteredJobs))
-jobRouter.get('/:jobId/applications',validation(jobValidation.getJobApplicationsValidation),authentication,asyncHandler(jobServices.getJobApplications))
-jobRouter.get('/:jobId?',validation(jobValidation.getJobsOrSpecificJobValidation),asyncHandler(jobServices.getJobsOrSpecificJob))
-jobRouter.post('/',authentication,validation(jobValidation.addJobValidationSchema),asyncHandler(jobServices.addJob))
-jobRouter.put('/:jobId',authentication,validation(jobValidation.updateJobValidationSchema),asyncHandler(jobServices.updateJob))
-jobRouter.delete('/:jobId',authentication,validation(jobValidation.deleteJobValidationSchema),asyncHandler(jobServices.deleteJob))
+const jobRouter = Router({ mergeParams: true })
+jobRouter.get('/allJobsForCompany', validation(jobValidation.getAllJobWithAppForSpecificCompanyValidation), asyncHandler(jobServices.getAllJobWithAppForSpecificCompany))
+jobRouter.get('/filter', validation(jobValidation.getFilteredJobsValidation), asyncHandler(jobServices.getFilteredJobs))
+jobRouter.get('/:jobId/applications', validation(jobValidation.getJobApplicationsValidation), authentication, asyncHandler(jobServices.getJobApplications))
+jobRouter.get('/:jobId?', validation(jobValidation.getJobsOrSpecificJobValidation), asyncHandler(jobServices.getJobsOrSpecificJob))
+jobRouter.post('/', authentication, validation(jobValidation.addJobValidationSchema), asyncHandler(jobServices.addJob))
+jobRouter.put('/:jobId', authentication, validation(jobValidation.updateJobValidationSchema), asyncHandler(jobServices.updateJob))
+jobRouter.delete('/:jobId', authentication, validation(jobValidation.deleteJobValidationSchema), asyncHandler(jobServices.deleteJob))
 
 export default jobRouter

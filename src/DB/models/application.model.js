@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 export const applicationStatusOptions = {
-  pending:"pending",
-  accepted:"accepted",
-  viewed:"viewed",
-  'in-consideration':"in consideration",
-  rejected:"rejected"
+  pending: "pending",
+  accepted: "accepted",
+  viewed: "viewed",
+  'in-consideration': "in consideration",
+  rejected: "rejected"
 };
 
 const applicationSchema = new mongoose.Schema(
@@ -28,7 +28,8 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       enum: Object.values(applicationStatusOptions),
       default: "pending"
-    }
+    },
+    deletedAt:Date
   },
   { timestamps: true }
 );
