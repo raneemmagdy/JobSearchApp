@@ -116,7 +116,7 @@ A comprehensive job search and hiring platform that connects job seekers with re
 
 ---
 
-## 📡 GraphQL API
+##  GraphQL API
 
 GraphQL is available at:
 **`http://localhost:3000/graphql`**
@@ -127,7 +127,7 @@ GraphQL is available at:
 - `getAllCompanies` - Fetch all companies
 - `getCompanyById(CompanyId: ID!)` - Fetch a specific company
 - 
-⚡ _For a full list of endpoints and usage examples, check out the[Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o)._ 
+⚡ _For a full list of endpoints and usage examples, check out the [Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o)._ 
 
 
 ---
@@ -139,5 +139,5 @@ GraphQL is available at:
 
 
 ## 👩‍💻 Author
-Developed by [Raneem Elmahdy](https://github.com/raneemmagdy2002).
+Developed by [Raneem Elmahdy](https://github.com/raneemmagdy).
 
