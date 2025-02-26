@@ -89,8 +89,8 @@ A comprehensive job search and hiring platform that connects job seekers with re
 - `POST /companies/cover/:companyId` - Upload company cover picture
 - `DELETE /companies/logo/:companyId` - Delete company logo
 - `DELETE /companies/cover/:companyId` - Delete company cover
-- `POST /companies/:companyId/HR/:userId` - Add HR to company
-- `DELETE /companies/:companyId/HR/:userId` - Remove HR from company
+- `POST /companies/:companyId/HR/:userId` - Add HR to company (Only the company owner can add HRs)
+- `DELETE /companies/:companyId/HR/:userId` - Remove HR from company (Only the company owner can remove HRs)
 
 ### 💼 Job Opportunities
 - `POST /companies/:companyId/jobs` - Create a job post (Only the company owner or HRs can add jobs)
