@@ -127,7 +127,7 @@ GraphQL is available at:
 - `getAllCompanies` - Fetch all companies
 - `getCompanyById(CompanyId: ID!)` - Fetch a specific company
 
-⚡For more details, check the [Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o).
+⚡ _For a full list of endpoints and usage examples, check out the [Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o)
 
 ---
 
