@@ -207,7 +207,7 @@ export const getJobApplications = async (req, res, next) => {
 
 //********************************************************************getAllJobWithAppForSpecificCompany
 export const getAllJobWithAppForSpecificCompany = async (req, res, next) => {
-  const { companyId } = req.params
+  const { companyId } = req.params;
   const company = await companyModel.findById(companyId);
 
   if (!company) {
@@ -216,7 +216,19 @@ export const getAllJobWithAppForSpecificCompany = async (req, res, next) => {
   if (company.deletedAt) {
     return next(new module.AppGeneralError("Company already Deleted", 400));
   }
-  const jobs = await jobModel.find({ companyId }).populate([{ path: "applications", populate: { path: 'userId' } }]);
+
+  const isAuthorized =
+    company.createdBy.toString() === req.user._id.toString() || 
+    company.HRs.some(hrId => hrId.toString() === req.user._id.toString());
+
+  if (!isAuthorized) {
+    return next(new module.AppGeneralError("Only the company owner or HRs can view job applications", 403));
+  }
+
+  const jobs = await jobModel.find({ companyId }).populate([
+    { path: "applications", populate: { path: "userId" } }
+  ]);
+
   return res.status(200).json({ message: "Jobs retrieved successfully", jobs });
 };
 

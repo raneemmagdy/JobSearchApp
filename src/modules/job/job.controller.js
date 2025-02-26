@@ -6,10 +6,10 @@ import * as jobServices from './job.service.js'
 import authentication from "../../middleware/authentication.js";
 
 const jobRouter = Router({ mergeParams: true })
-jobRouter.get('/allJobsForCompany', validation(jobValidation.getAllJobWithAppForSpecificCompanyValidation), asyncHandler(jobServices.getAllJobWithAppForSpecificCompany))
-jobRouter.get('/filter', validation(jobValidation.getFilteredJobsValidation), asyncHandler(jobServices.getFilteredJobs))
+jobRouter.get('/allJobsForCompany',authentication, validation(jobValidation.getAllJobWithAppForSpecificCompanyValidation), asyncHandler(jobServices.getAllJobWithAppForSpecificCompany))
+jobRouter.get('/filter',authentication ,validation(jobValidation.getFilteredJobsValidation), asyncHandler(jobServices.getFilteredJobs))
 jobRouter.get('/:jobId/applications', validation(jobValidation.getJobApplicationsValidation), authentication, asyncHandler(jobServices.getJobApplications))
-jobRouter.get('/:jobId?', validation(jobValidation.getJobsOrSpecificJobValidation), asyncHandler(jobServices.getJobsOrSpecificJob))
+jobRouter.get('/:jobId?',authentication ,validation(jobValidation.getJobsOrSpecificJobValidation), asyncHandler(jobServices.getJobsOrSpecificJob))
 jobRouter.post('/', authentication, validation(jobValidation.addJobValidationSchema), asyncHandler(jobServices.addJob))
 jobRouter.put('/:jobId', authentication, validation(jobValidation.updateJobValidationSchema), asyncHandler(jobServices.updateJob))
 jobRouter.delete('/:jobId', authentication, validation(jobValidation.deleteJobValidationSchema), asyncHandler(jobServices.deleteJob))
