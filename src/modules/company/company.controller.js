@@ -40,11 +40,13 @@ companyRouter.delete(
 );
 companyRouter.get(
   "/:companyId",
+  authentication,
   validation(companyValidation.idCompanySchema),
   asyncHandler(companyServices.getCompanyWithJobs)
 );
 companyRouter.get(
   "/",
+  authentication,
   validation(companyValidation.searchCompanyByNameSchema),
   asyncHandler(companyServices.searchCompanyByName)
 );
@@ -96,6 +98,7 @@ companyRouter.delete(
 );
 companyRouter.get(
   "/HR/:companyId",
+  authentication,
   validation(companyValidation.idCompanySchema),
   asyncHandler(companyServices.getCompanyWithHRs)
 );
