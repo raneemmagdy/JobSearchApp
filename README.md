@@ -113,6 +113,7 @@ A comprehensive job search and hiring platform that connects job seekers with re
 ### 💬 Real-time Chat
 - `GET /chats/:userId` - HRs fetch a chat
 - **WebSockets:** Messages are sent and received via Socket.IO events (HR Can start Chat only)
+⚡ _For a full list of endpoints and usage examples, check out the [Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o)._ 
 
 ---
 
@@ -126,8 +127,8 @@ GraphQL is available at:
 - `getUserById(userId: ID!)` - Fetch a specific user
 - `getAllCompanies` - Fetch all companies
 - `getCompanyById(CompanyId: ID!)` - Fetch a specific company
-- 
-⚡ _For a full list of endpoints and usage examples, check out the [Postman API Documentation](https://documenter.getpostman.com/view/26311189/2sAYdeMs9o)._ 
+⚡ _For a full list of endpoints and usage examples, check out the [GraphQl API Documentation](https://job-search-app-six.vercel.app/playground)._ 
+  
 
 
 ---
