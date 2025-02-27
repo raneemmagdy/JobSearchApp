@@ -18,7 +18,7 @@ userRouter.patch('/forgetPassword', validation(userValidation.emailSchema), asyn
 userRouter.patch('/resetPassword', validation(userValidation.resetPasswordSchema), asyncHandler(userServices.resetPassword))
 userRouter.patch('/updateProfile', validation(userValidation.updateProfileSchema), authentication, asyncHandler(userServices.updateProfile))
 userRouter.get('/getProfile', authentication, asyncHandler(userServices.getProfileData))
-userRouter.get('/:userId', validation(userValidation.idSchema), asyncHandler(userServices.getUserProfileById))
+userRouter.get('/:userId',authentication ,validation(userValidation.idSchema), asyncHandler(userServices.getUserProfileById))
 userRouter.patch('/updatePassword', validation(userValidation.updatePasswordSchema), authentication, asyncHandler(userServices.updatePassword))
 userRouter.post('/uploadProfilePic', multerHost(formatOptions.image).single('profilePic'), validation(userValidation.uploadProfilePicSchema), authentication, asyncHandler(userServices.uploadProfilePic))
 userRouter.post('/uploadCoverPic', multerHost(formatOptions.image).single('coverPic'), validation(userValidation.uploadCoverPicSchema), authentication, asyncHandler(userServices.uploadCoverPic))
