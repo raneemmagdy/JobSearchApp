@@ -97,4 +97,47 @@ export const authSocket = async ({ socket, tokenType = tokenTypes.access }) => {
         return { message: 'Invalid token', statusCode: 401 };
     }
 }
+
+export const graphQlAuth=async({authorization,tokenType=tokenTypes.access,accessRoles=[]})=>{
+
+    if(!authorization){
+        throw new AppGeneralError('Token Not Found',404)
+    }
+    const [prefix,token]=authorization.split(' ')
+
+    if(!prefix){
+        throw new AppGeneralError('Token prefix not found',404);
+    }
+    if(!token){
+        throw new AppGeneralError('Token not found',404);
+    }
+    let JWT_SECRET=undefined
+    if(prefix==process.env.PREFIX_FOR_USER){
+        JWT_SECRET=tokenType===tokenTypes.access?process.env.ACCESS_JWT_SECRET_USER:process.env.REFRESH_JWT_SECRET_USER
+    }else if(prefix==process.env.PREFIX_FOR_ADMIN){
+        JWT_SECRET=tokenType===tokenTypes.access?process.env.ACCESS_JWT_SECRET_ADMIN:process.env.REFRESH_JWT_SECRET_ADMIN
+    }else{
+        throw new AppGeneralError('Invalid token prefix. Unauthorized access.',400)
+    }
+
+    const payload= await VerifyToken({token,JWT_SECRET})
+    if(!payload?.email||!payload?.id){
+        throw new AppGeneralError('Invalid token payload',400)
+    }
+    const user= await userModel.findById({_id:payload.id})
+    if(!user){
+        throw new AppGeneralError('User Not Found',404)
+    }
+    if(user?.deletedAt){
+        throw new AppGeneralError('User Is Deleted(Soft Delete)', 400);
+    }
+    if(parseInt(user?.changeCredentialTime?.getTime()/1000) > payload.iat){
+        throw new AppGeneralError('Token has expired. Please log in again.', 400);
+    }
+    if(!accessRoles.includes(user.role)){
+        throw new AppGeneralError('Access denied: You do not have the required permissions.',403)
+    }
+    return user
+
+}
 export default authentication
