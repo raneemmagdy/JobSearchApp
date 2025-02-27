@@ -124,10 +124,10 @@ GraphQL is available at:
 **`http://localhost:3000/graphql`**
 
 ### Queries:
-- `getAllUsers` - Fetch all users
-- `getUserById(userId: ID!)` - Fetch a specific user
-- `getAllCompanies` - Fetch all companies
-- `getCompanyById(CompanyId: ID!)` - Fetch a specific company
+- `getAllUsers(authorization:String!)` - Fetch all users
+- `getUserById(userId: ID!,authorization:String!)` - Fetch a specific user
+- `getAllCompanies(authorization:String!)` - Fetch all companies
+- `getCompanyById(CompanyId: ID!,authorization:String!)` - Fetch a specific company
   
 ⚡ _For GraphQl Docs, check out the [GraphQl API Documentation](https://job-search-app-six.vercel.app/playground)._ 
   
