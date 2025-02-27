@@ -129,7 +129,7 @@ GraphQL is available at:
 - `getAllCompanies` - Fetch all companies
 - `getCompanyById(CompanyId: ID!)` - Fetch a specific company
   
-⚡ _For a full list of endpoints and usage examples, check out the [GraphQl API Documentation](https://job-search-app-six.vercel.app/playground)._ 
+⚡ _For GraphQl Docs, check out the [GraphQl API Documentation](https://job-search-app-six.vercel.app/playground)._ 
   
 
 
