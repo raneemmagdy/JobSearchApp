@@ -102,11 +102,7 @@ export const getFilteredJobsValidation = Joi.object({
         jobTitle: Joi.string().trim().messages({
                 "string.base": "Job title must be a string."
         }),
-        technicalSkills: Joi.array().items(Joi.string().trim()).min(1).messages({
-                "array.base": "Technical skills must be an array.",
-                "array.min": "At least one technical skill is required.",
-
-        }),
+        technicalSkills: Joi.string()
 });
 export const getJobApplicationsValidation = Joi.object({
         companyId: generalRules.ObjectId.required(),

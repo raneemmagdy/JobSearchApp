@@ -153,7 +153,7 @@ export const getFilteredJobs = async (req, res, next) => {
   if (jobTitle) filter.jobTitle = { $regex: new RegExp(jobTitle, "i") };
   if (technicalSkills) {
     const skillsArray = technicalSkills.split(",");
-    filter.technicalSkills = { $all: skillsArray };
+    filter.technicalSkills = { $in: skillsArray.map(skill => new RegExp(`^${skill.trim()}$`, "i"))};
   }
   const paginatedResult = await module.pagination({
     page,

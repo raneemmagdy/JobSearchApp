@@ -95,9 +95,7 @@ export const softDeleteCompany = async (req, res, next) => {
 
 //====================================================getCompanyWithJobs
 export const getCompanyWithJobs = async (req, res, next) => {
-    if (!req.user) {
-        return next(new module.AppGeneralError("Authentication required", 401));
-    }
+
     const { companyId } = req.params;
 
     const company = await companyModel.findOne({ _id: companyId, deletedAt: null })
@@ -117,10 +115,6 @@ export const getCompanyWithJobs = async (req, res, next) => {
 //====================================================searchCompanyByName
 export const searchCompanyByName = async (req, res, next) => {
     const { name, page } = req.query;
-    if (!req.user) {
-        return next(new module.AppGeneralError("Authentication required", 401));
-    }
-
     if (!name) {
         return next(new module.AppGeneralError("Company name is required", 400));
     }
@@ -285,9 +279,6 @@ export const addHRToCompany = async (req, res, next) => {
 
 //====================================================getCompanyWithHRs
 export const getCompanyWithHRs = async (req, res, next) => {
-    if (!req.user) {
-        return next(new module.AppGeneralError("Authentication required", 401));
-    }
     const { companyId } = req.params;
     const company = await companyModel.findById(companyId).populate({ path: "HRs" });
 
